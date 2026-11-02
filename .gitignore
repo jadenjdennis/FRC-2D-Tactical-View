@@ -3,7 +3,5 @@ __pycache__/
 *.pyc
 .DS_Store
 
-assets/videos/
-output/
 runs/
 *.pt
