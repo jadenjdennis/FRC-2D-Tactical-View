@@ -6,7 +6,7 @@ field = cv2.imread("FieldMap.png")
 h, w = field.shape[:2]
 
 
-df = pd.read_csv(".csv").sort_values(by="timestamp").reset_index(drop=True)
+df = pd.read_csv("robot_positions.csv").sort_values(by="timestamp").reset_index(drop=True)
 
 timestamps = df["timestamp"].to_numpy()
 xPos = df["x"].to_numpy()
