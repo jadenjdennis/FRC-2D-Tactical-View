@@ -5,14 +5,16 @@ import pandas as pd
 field = cv2.imread("FieldMap.png")
 h, w = field.shape[:2]
 
-# grab the tracking data and sort by time
+
 df = pd.read_csv("data.csv").sort_values(by="timestamp").reset_index(drop=True)
 
 timestamps = df["timestamp"].to_numpy()
 xPos = df["x"].to_numpy()
 yPos = df["y"].to_numpy()
 
-# set up the grid for the heatmap
+
+#Decided to go w 20x20 for now, but lwk might wanna change this depending 
+#how it turns out once Aarmaan finishes the other section
 cellSize = 20
 cols = int(np.ceil(w / cellSize))
 rows = int(np.ceil(h / cellSize))
@@ -20,7 +22,7 @@ heatmap = np.zeros((rows, cols), dtype=np.float64)
 
 maxTimeGap = 0.5
 
-# interpolate movement between points
+
 for i in range(len(timestamps) - 1):
     x1, y1 = xPos[i], yPos[i]
     x2, y2 = xPos[i+1], yPos[i+1]
@@ -45,21 +47,23 @@ for i in range(len(timestamps) - 1):
         r = int(curr_y / cellSize)
         heatmap[r, c] += elapsedTime / numSteps
 
-# normalize and colorize
+
 posValues = heatmap[heatmap > 0]
 if (len(posValues) == 0):
     raise ValueError("No valid observations found.")
 
+#Chose to use 99th percentile to avoid outliers bugging w the heatmap
 max_val = np.percentile(posValues, 99)
 norm = np.clip(heatmap / max_val * 255, 0, 255).astype(np.uint8)
 
 resizedMap = cv2.resize(norm, (w, h), interpolation=cv2.INTER_LINEAR)
 coloredMap = cv2.applyColorMap(resizedMap, cv2.COLORMAP_JET)
 
+#You gotta use addWeighted here cuz heatmap isn't transparent by default
 alpha = 0.55
 overlay = cv2.addWeighted(field, 1 - alpha, coloredMap, alpha, 0)
 
-# mask out areas with no actual data
+
 mask = resizedMap > 0
 
 overlay[mask] = cv2.addWeighted(
