@@ -2,3 +2,4 @@ ultralytics
 opencv-contrib-python
 numpy
 matplotlib
+pytesseract
