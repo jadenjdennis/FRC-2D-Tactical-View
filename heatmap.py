@@ -4,7 +4,11 @@ import pandas as pd
 
 
 def generate_heatmap():
-    field = cv2.imread("FieldMap.png")
+    field = cv2.imread("OGFieldMap.png")
+    field = cv2.resize(field, (1302, 635), interpolation=cv2.INTER_AREA)
+
+    cv2.imwrite("FieldMap.png", field)
+    field =cv2.imread("FieldMap.png")
     h, w = field.shape[:2]
 
 
@@ -74,25 +78,7 @@ def generate_heatmap():
         coloredMap[mask], 0.55, 
         0
     )
-
-
-    print("X range:", df["field_x"].min(), "to", df["field_x"].max())
-    print("Y range:", df["field_y"].min(), "to", df["field_y"].max())
-
-    print("Field dimensions:", w, "x", h)
-
-    print("X 1st-99th percentile:",
-      np.percentile(xPos, [1, 99]))
-
-    print("Y 1st-99th percentile:",
-      np.percentile(yPos, [1, 99]))
-
-    print("Timestamp range:",
-      timestamps.min(), "to", timestamps.max())
-
-    print("Average time interval:",
-      np.mean(np.diff(timestamps)))
-
+    
     cv2.imwrite("FieldMap.png", overlay)
     cv2.imshow("FieldMap", overlay)
     cv2.waitKey(0)
