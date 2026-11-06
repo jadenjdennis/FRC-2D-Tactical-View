@@ -9,9 +9,9 @@ def generate_heatmap():
 
 
 
-    df = pd.read_csv("robot_positions.csv").sort_values(by="timestamp").reset_index(drop=True)
+    df = pd.read_csv("robot_positions.csv").sort_values(by="time_sec").reset_index(drop=True)
 
-    timestamps = df["timestamp"].to_numpy()
+    timestamps = df["time_sec"].to_numpy()
     xPos = df["field_x"].to_numpy()
     yPos = df["field_y"].to_numpy()
 
@@ -74,6 +74,24 @@ def generate_heatmap():
         coloredMap[mask], 0.55, 
         0
     )
+
+
+    print("X range:", df["field_x"].min(), "to", df["field_x"].max())
+    print("Y range:", df["field_y"].min(), "to", df["field_y"].max())
+
+    print("Field dimensions:", w, "x", h)
+
+    print("X 1st-99th percentile:",
+      np.percentile(xPos, [1, 99]))
+
+    print("Y 1st-99th percentile:",
+      np.percentile(yPos, [1, 99]))
+
+    print("Timestamp range:",
+      timestamps.min(), "to", timestamps.max())
+
+    print("Average time interval:",
+      np.mean(np.diff(timestamps)))
 
     cv2.imwrite("FieldMap.png", overlay)
     cv2.imshow("FieldMap", overlay)

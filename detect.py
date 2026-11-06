@@ -1,7 +1,8 @@
-
 import cv2
 import numpy as np
 import csv
+import pandas as pd
+from heatmap import generate_heatmap
 
 VIDEO = "assets/match6.mp4"
 START_TIME = 10
@@ -119,7 +120,7 @@ with open("robot_positions.csv", "w", newline="") as file:
         cv2.imshow("Filtered Motion Mask", filtered)
         cv2.imshow("Top-Down Preview", top_down)
 
-        key = cv2.waitKey(0 if paused else 30) & 0xFF
+        key = cv2.waitKey(0 if paused else 1) & 0xFF
         if key == ord("q"):
             break
         elif key == 32:
@@ -132,3 +133,5 @@ with open("robot_positions.csv", "w", newline="") as file:
 cap.release()
 cv2.destroyAllWindows()
 print("Saved robot_positions.csv")
+
+generate_heatmap()
