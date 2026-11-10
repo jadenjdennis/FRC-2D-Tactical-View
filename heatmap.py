@@ -28,6 +28,7 @@ def generate_heatmap():
     heatmap = np.zeros((rows, cols), dtype=np.float64)
 
     maxTimeGap = 0.5
+    minTimeGap = 0.01
 
     for i in range(len(timestamps) - 1):
         x1, y1 = xPos[i], yPos[i]
@@ -35,7 +36,7 @@ def generate_heatmap():
 
         elapsedTime = timestamps[i+1] - timestamps[i]
 
-        if ((elapsedTime <= 0) or (elapsedTime > maxTimeGap)):
+        if ((elapsedTime <= minTimeGap) or (elapsedTime > maxTimeGap)):
             continue
 
         distance = np.hypot(x2 - x1, y2 - y1)
@@ -59,7 +60,7 @@ def generate_heatmap():
     #if (len(posValues) == 0):
     #    raise ValueError("No valid observations found.")
 
-    #Chose to use 99th percentile to avoid outliers bugging w the heatmap
+    #Chose to use 99th percentile to avoid outliers bu-bu-bugging w the heatmap
     max_val = np.percentile(posValues, 99)
     norm = np.clip(heatmap / max_val * 255, 0, 255).astype(np.uint8)
 

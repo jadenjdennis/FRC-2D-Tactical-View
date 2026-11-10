@@ -4,13 +4,14 @@ import csv
 import pandas as pd
 from heatmap import generate_heatmap
 
+# These will be the default values at the start of the program
 VIDEO = "assets/match6.mp4"
 START_TIME = 10
 MIN_AREA = 500
 MIN_RATIO = 80
 LEARNING_RATE = 0.0005
 
-# 2026 REBUILT field proportions (2 pixels per inch)
+# These dims are proportionally adjusted, after Jaden analyzed the csv file in Excel
 W, H = 1302, 635
 
 cap = cv2.VideoCapture(VIDEO)
@@ -114,12 +115,14 @@ with open("robot_positions.csv", "w", newline="") as file:
         cv2.putText(display, status, (20, 40),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.8,
                     (0, 0, 255) if recording else (150, 150, 150), 2)
+        
 
         cv2.imshow("Detection", display)
         cv2.imshow("Motion Mask", mask)
         cv2.imshow("Filtered Motion Mask", filtered)
         cv2.imshow("Top-Down Preview", top_down)
-
+        #We can change the speed here in the else condition samller numbers will make it go faster, but DO NOT SET IT LESS THAN 1
+        #JADEN LOOK AT THIS BOI <-----------------------
         key = cv2.waitKey(0 if paused else 1) & 0xFF
         if key == ord("q"):
             break
