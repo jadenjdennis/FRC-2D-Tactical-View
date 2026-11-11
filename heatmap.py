@@ -10,9 +10,6 @@ def generate_heatmap():
     cv2.imwrite("FieldMap.png", field)
     field =cv2.imread("FieldMap.png")
     h, w = field.shape[:2]
-
-
-
     df = pd.read_csv("robot_positions.csv").sort_values(by="time_sec").reset_index(drop=True)
 
     timestamps = df["time_sec"].to_numpy()
@@ -62,23 +59,15 @@ def generate_heatmap():
 
     #Chose to use 99th percentile to avoid outliers bu-bu-bugging w the heatmap
     max_val = np.percentile(posValues, 99)
-    norm = np.clip(heatmap / max_val * 255, 0, 255).astype(np.uint8)
+    convValue = heatmap / max_val * 255
+    norm = np.clip(convValue, 0, 255).astype(np.uint8)
 
     resizedMap = cv2.resize(norm, (w, h), interpolation=cv2.INTER_LINEAR)
     coloredMap = cv2.applyColorMap(resizedMap, cv2.COLORMAP_JET)
 
-    #You gotta use addWeighted here cuz heatmap isn't transparent by default
-    alpha = 0.55
-    overlay = cv2.addWeighted(field, 1 - alpha, coloredMap, alpha, 0)
-
-
-    mask = resizedMap > 0
-
-    overlay[mask] = cv2.addWeighted(
-        field[mask], 0.45, 
-        coloredMap[mask], 0.55, 
-        0
-    )
+    # Apply the heatmap to the complete field, including cells with no
+    # recorded observations.
+    overlay = cv2.addWeighted(field, 0.45, coloredMap, 0.55, 0)
     
     cv2.imwrite("FieldMap.png", overlay)
     cv2.imshow("FieldMap", overlay)

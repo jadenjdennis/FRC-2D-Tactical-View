@@ -65,7 +65,7 @@ dst = np.float32([
 
 matrix = cv2.getPerspectiveTransform(src, dst)
 
-# Note for Jaden: This is not the modle learning rate, for MOG2 the low learning rate is so robots don't disappear when they momentarily pause
+# FOR JADEN: This is not the modle learning rate, for MOG2 the low learning rate is so robots don't disappear when they momentarily pause
 mog2 = cv2.createBackgroundSubtractorMOG2(
     history=500,
     varThreshold=35,
@@ -193,7 +193,8 @@ with open("robot_positions.csv", "w", newline="") as file:
         if paused:
             delay = 0
         else:
-            delay = 30
+            #JADEN: CHANGE THIS VAL IF YOU WANNA MAKE IT GO FASTER <---
+            delay = 1
 
         key = cv2.waitKey(delay) & 0xFF
 
